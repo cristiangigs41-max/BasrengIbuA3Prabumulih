@@ -9,3 +9,7 @@
 
 Kunci anon bersifat publik. Tabel dikunci (RLS) dan semua aksi lewat fungsi `a3_*`, jadi data aman.
 Jangan pernah membagikan kunci **service_role**.
+
+## Nama database
+- Supabase: beri nama project **basreng-ibua3prabumulih** (Supabase tidak mengizinkan spasi di nama database; nama project bebas).
+- MySQL/Laravel (XAMPP): database **basreng_ibua3prabumulih** (file `database/sql/basreng_ibua3prabumulih.sql` sudah membuatnya otomatis; `env.mysql.txt` sudah memakai nama ini).

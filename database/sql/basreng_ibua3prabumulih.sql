@@ -1,7 +1,7 @@
 -- Basreng Ibu A3 – skema + data awal MySQL (alternatif dari php artisan migrate --seed)
--- Import lewat phpMyAdmin atau: mysql -u root -p < basreng_ibu_a3.sql
-CREATE DATABASE IF NOT EXISTS basreng_ibu_a3 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE basreng_ibu_a3;
+-- Import lewat phpMyAdmin atau: mysql -u root -p < basreng_ibua3prabumulih.sql
+CREATE DATABASE IF NOT EXISTS basreng_ibua3prabumulih CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE basreng_ibua3prabumulih;
 SET FOREIGN_KEY_CHECKS=0;
 
 CREATE TABLE users (
