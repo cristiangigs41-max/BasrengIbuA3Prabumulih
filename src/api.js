@@ -1,4 +1,8 @@
 import { localApi } from './localApi'
+import { supaApi } from './supaApi'
+import { SUPABASE_URL, SUPABASE_KEY } from './supabaseConfig'
+
+export const USE_SUPABASE = !!(SUPABASE_URL && SUPABASE_KEY)
 
 // Alamat backend Laravel. Kosongkan VITE_API_URL untuk memakai penyimpanan lokal di browser.
 export const API = import.meta.env.VITE_API_URL || ''
@@ -7,12 +11,13 @@ export const mediaUrl = (img) => (img.startsWith('/media/') ? import.meta.env.BA
 
 const KEY = 'a3_token'
 export const getToken = () => { try { return localStorage.getItem(KEY) } catch { return null } }
-export const setToken = (t) => { try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY) } catch { /* abaikan */ } }
+export const setToken = (t) => { try { if (t) localStorage.setItem(KEY, t); else { localStorage.removeItem(KEY); localStorage.removeItem('a3_refresh') } } catch { /* abaikan */ } }
 
 let demo = !API
 const goLocal = () => { if (!demo) { demo = true; setToken(null) } }
 
 export async function api(path, opts = {}) {
+  if (USE_SUPABASE) return supaApi(path, opts)
   if (demo) return localApi(path, opts)
   let { method = 'GET', body } = opts
   if (body && !(body instanceof FormData) && Object.values(body).some((v) => v instanceof File)) { // ada unggahan file
