@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { API } from '../api'
 import { CONTACT } from '../media'
 import Icon from './Icon'
+import { buildSystem, fallbackReply, askFree } from '../../server/chatCore.js'
 
 const HELLO = { role: 'assistant', content: 'Halo! Saya Asisten A3 🍤 Tanya apa saja, soal basreng & pangsit kami maupun hal lain, saya siap jawab.' }
 const QUICK = ['Berapa harga basreng?', 'Ada rasa apa saja?', 'Bagaimana cara pesan?', 'Ide resep camilan?']
@@ -53,7 +54,8 @@ export default function ChatBot({ products = [], flavors = [] }) {
       reply = d.reply || ''
       setNeedKey(!!d.needKey && !API)
     } catch {
-      reply = 'Server chat belum aktif. Hentikan lalu jalankan ulang `npm run dev` dari folder project ini, dan buka situs lewat alamat yang tampil di terminal (jangan dari file dist / XAMPP). Pastikan ANTHROPIC_API_KEY sudah diisi di file .env.'
+      // Hosting statis (mis. GitHub Pages) tidak punya server chat: panggil AI gratis langsung dari browser.
+      try { reply = await askFree(buildSystem(shop), history) } catch { reply = fallbackReply(content, shop) }
     }
     upd(id, (c) => ({ ...c, msgs: [...c.msgs, { role: 'assistant', content: reply || 'Maaf, tidak ada jawaban. Coba lagi ya.' }] }))
     setBusy(false)
