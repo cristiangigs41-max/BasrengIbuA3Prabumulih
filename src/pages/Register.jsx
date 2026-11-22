@@ -14,7 +14,7 @@ export default function Register() {
   }
   return (
     <div className="auth">
-      <div className="auth-art" style={{ backgroundImage: 'url(/media/foto-2.jpg)' }}><div><h2>Gabung dan pesan camilan favoritmu.</h2><p>Simpan alamat, pantau pesanan, dan pesan ulang dengan cepat.</p></div></div>
+      <div className="auth-art" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}media/foto-2.jpg)` }}><div><h2>Gabung dan pesan camilan favoritmu.</h2><p>Simpan alamat, pantau pesanan, dan pesan ulang dengan cepat.</p></div></div>
       <div className="auth-form"><form className="box" onSubmit={submit}>
         <h2>Buat akun</h2><p>Hanya butuh satu menit.</p>
         {err && <div className="err" role="alert">{err}</div>}

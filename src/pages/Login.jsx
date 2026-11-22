@@ -13,7 +13,7 @@ export default function Login() {
   }
   return (
     <div className="auth">
-      <div className="auth-art" style={{ backgroundImage: 'url(/media/foto-4.jpg)' }}><div><h2>Camilan renyah menunggu di keranjangmu.</h2><p>Masuk untuk melanjutkan pesanan dan melihat riwayat belanja.</p></div></div>
+      <div className="auth-art" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}media/foto-4.jpg)` }}><div><h2>Camilan renyah menunggu di keranjangmu.</h2><p>Masuk untuk melanjutkan pesanan dan melihat riwayat belanja.</p></div></div>
       <div className="auth-form"><form className="box" onSubmit={submit}>
         <h2>Selamat datang kembali</h2><p>Masuk ke akun Basreng Ibu A3.</p>
         {err && <div className="err" role="alert">{err}</div>}
