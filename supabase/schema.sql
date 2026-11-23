@@ -470,3 +470,28 @@ begin
       values (pid, 'Pack 5K', 5000, 100), (pid, 'Pack 10K', 10000, 100), (pid, '1/2 Kg', 45000, 100), (pid, '1 Kg', 90000, 100);
   end loop;
 end $$;
+
+-- ---------- Pendaftaran pelanggan tanpa email konfirmasi ----------
+create or replace function a3_register(p_name text, p_email text, p_phone text, p_password text) returns jsonb
+language plpgsql security definer set search_path = public, auth, extensions as $$
+declare e text := lower(trim(coalesce(p_email, ''))); uid uuid := gen_random_uuid();
+begin
+  if length(trim(coalesce(p_name, ''))) < 3 then perform a3_err('Nama minimal 3 karakter.'); end if;
+  if e !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' or length(e) > 255 then perform a3_err('Email tidak valid.'); end if;
+  if coalesce(p_phone, '') !~ '^[0-9+]{9,15}$' then perform a3_err('Nomor WhatsApp tidak valid.'); end if;
+  if length(coalesce(p_password, '')) < 6 or length(p_password) > 72 then perform a3_err('Password minimal 6 karakter.'); end if;
+  if exists (select 1 from a3_admin_emails a where a.email = e) or exists (select 1 from auth.users u where lower(u.email) = e) then
+    perform a3_err('Email sudah terdaftar.');
+  end if;
+  insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+    raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+    confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current, phone_change, phone_change_token, reauthentication_token)
+  values ('00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', e, crypt(p_password, gen_salt('bf', 10)), now(),
+    '{"provider":"email","providers":["email"]}', jsonb_build_object('name', trim(p_name), 'phone', p_phone), now(), now(),
+    '', '', '', '', '', '', '', '');
+  insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+  values (uid::text, uid, jsonb_build_object('sub', uid::text, 'email', e, 'email_verified', true, 'phone_verified', false), 'email', now(), now(), now());
+  return jsonb_build_object('message', 'ok');
+end $$;
+revoke all on function a3_register(text, text, text, text) from public, anon, authenticated;
+grant execute on function a3_register(text, text, text, text) to anon, authenticated;

@@ -63,11 +63,8 @@ export async function supaApi(path, { method = 'GET', body } = {}) {
     if (!/^[0-9+]{9,15}$/.test(body.phone || '')) throw err('Nomor WhatsApp tidak valid.')
     if ((body.password || '').length < 6) throw err('Password minimal 6 karakter.')
     if (body.password !== body.password_confirmation) throw err('Konfirmasi password tidak sama.')
-    const { res, data } = await http(SUPABASE_URL + '/auth/v1/signup', { method: 'POST', headers: baseHeaders(),
-      body: JSON.stringify({ email: body.email.trim().toLowerCase(), password: body.password, data: { name: body.name.trim(), phone: body.phone } }) })
-    if (!res.ok) throw authErr(data, 'Pendaftaran gagal. Coba lagi.')
-    // Supabase membalas "sukses" untuk email yang sudah ada bila konfirmasi email aktif: identities kosong.
-    if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) throw err('Email sudah terdaftar.')
+    // Daftar lewat fungsi database (tanpa email konfirmasi, jadi tidak kena batas kirim email Supabase).
+    await rpc('a3_register', { p_name: body.name.trim(), p_email: body.email.trim().toLowerCase(), p_phone: body.phone, p_password: body.password })
     return { message: 'ok' } // pengguna wajib login setelah mendaftar (sesi dari signup tidak dipakai)
   }
   if (a === 'login') {

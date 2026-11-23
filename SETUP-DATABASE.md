@@ -1,7 +1,7 @@
 # Menyambungkan database online (Supabase, gratis)
 
 1. Daftar di https://supabase.com lalu **New project** (nama bebas, catat password database, region Singapore).
-2. Menu **Authentication → Sign In / Providers → Email**: matikan **Confirm email**, simpan.
+2. (Tidak perlu lagi mematikan "Confirm email": pendaftaran memakai fungsi database a3_register.)
 3. Menu **SQL Editor → New query**: tempel seluruh isi `supabase/schema.sql`, klik **Run**.
    (Email admin default `admin@basrengibua3.com`; ganti di baris awal file bila perlu.)
 4. Menu **Project Settings → API**: salin **Project URL** dan **anon / publishable key**, kirim ke Claude.
