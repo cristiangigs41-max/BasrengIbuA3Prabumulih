@@ -93,8 +93,16 @@ export default function App() {
   const isAdminRoute = route.startsWith('/admin')
   let body
   if (isAdminRoute) {
-    if (user?.role !== 'admin') {
-      body = <div className="page"><div className="wrap"><h1>Akses ditolak</h1><p>Halaman ini khusus admin.</p><a className="btn" style={{ marginTop: 16 }} onClick={() => go(user ? '/' : '/login')}>Kembali</a></div></div>
+    if (!user) {
+      body = <Login />
+    } else if (user.role !== 'admin') {
+      body = (
+        <div className="page"><div className="wrap">
+          <h1>Akses ditolak</h1>
+          <p>Halaman ini khusus admin. Saat ini Anda masuk sebagai <b>{user.email}</b> (pelanggan).</p>
+          <a className="btn" style={{ marginTop: 16 }} onClick={async () => { await logout(); go('/login') }}>Keluar &amp; masuk sebagai admin</a>
+        </div></div>
+      )
     } else {
       const sub = route.split('/')[2] || ''
       const pages = { '': Dashboard, produk: ProductsAdmin, kategori: Categories, stok: Stock, pesanan: Orders, pelanggan: Customers, laporan: Report, profil: AdminProfile }
